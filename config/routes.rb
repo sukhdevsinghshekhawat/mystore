@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   Spree::Core::Engine.add_routes do
+    namespace :admin do
+      resources :brands
+    end
     # Admin authentication
     devise_for(
       Spree.admin_user_class.model_name.singular_route_key,

@@ -75,3 +75,9 @@ group :development, :test do
   gem "letter_opener"
   gem "listen"
 end
+
+gem "spree_stripe", "~> 1.8"
+
+gem "spree_razorpay_checkout", "~> 0.3.3"
+
+gem "mini_magick", "~> 5.3"
