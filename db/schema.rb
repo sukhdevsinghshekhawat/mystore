@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_04_060842) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_24_124107) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -214,6 +214,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_060842) do
     t.index ["position"], name: "index_spree_assets_on_position"
     t.index ["viewable_id"], name: "index_assets_on_viewable_id"
     t.index ["viewable_type", "type"], name: "index_assets_on_viewable_type_and_type"
+  end
+
+  create_table "spree_brands", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_spree_brands_on_name"
   end
 
   create_table "spree_calculators", force: :cascade do |t|
@@ -1339,6 +1346,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_060842) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "spree_razorpay_checkouts", force: :cascade do |t|
+    t.string "bank"
+    t.string "card_id"
+    t.string "contact"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.bigint "order_id"
+    t.string "payment_method"
+    t.string "razorpay_order_id"
+    t.string "razorpay_payment_id"
+    t.string "razorpay_signature"
+    t.string "status"
+    t.datetime "updated_at", null: false
+    t.string "vpa"
+    t.string "wallet"
+    t.index ["order_id"], name: "index_spree_razorpay_checkouts_on_order_id"
+    t.index ["razorpay_order_id"], name: "index_spree_razorpay_checkouts_on_razorpay_order_id"
+    t.index ["razorpay_payment_id"], name: "index_spree_razorpay_checkouts_on_razorpay_payment_id"
+  end
+
   create_table "spree_refresh_tokens", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
@@ -1825,6 +1852,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_060842) do
     t.index ["url"], name: "index_spree_stores_on_url"
   end
 
+  create_table "spree_stripe_payment_methods_webhook_keys", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "payment_method_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "webhook_key_id", null: false
+    t.index ["payment_method_id", "webhook_key_id"], name: "index_payment_method_id_webhook_key_id_uniqueness", unique: true
+    t.index ["payment_method_id"], name: "index_payment_methods_webhook_keys_on_payment_method_id"
+    t.index ["webhook_key_id"], name: "index_payment_methods_webhook_keys_on_webhook_key_id"
+  end
+
+  create_table "spree_stripe_webhook_keys", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "signing_secret", null: false
+    t.string "stripe_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["signing_secret"], name: "index_spree_stripe_webhook_keys_on_signing_secret", unique: true
+    t.index ["stripe_id"], name: "index_spree_stripe_webhook_keys_on_stripe_id", unique: true
+  end
+
   create_table "spree_taggings", force: :cascade do |t|
     t.string "context", limit: 128
     t.datetime "created_at", precision: nil
@@ -2038,8 +2084,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_060842) do
     t.datetime "updated_at", null: false
     t.index ["accepts_email_marketing"], name: "index_spree_users_on_accepts_email_marketing"
     t.index ["bill_address_id"], name: "index_spree_users_on_bill_address_id"
-    t.index ["email"], name: "index_spree_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_spree_users_on_reset_password_token", unique: true
     t.index ["ship_address_id"], name: "index_spree_users_on_ship_address_id"
   end
 
@@ -2186,6 +2230,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_04_060842) do
   add_foreign_key "spree_payment_sources", "spree_payment_methods", column: "payment_method_id"
   add_foreign_key "spree_payment_sources", "spree_users", column: "user_id"
   add_foreign_key "spree_product_translations", "spree_products"
+  add_foreign_key "spree_razorpay_checkouts", "spree_orders", column: "order_id"
   add_foreign_key "spree_store_translations", "spree_stores"
   add_foreign_key "spree_taxon_translations", "spree_taxons"
   add_foreign_key "spree_taxonomy_translations", "spree_taxonomies"

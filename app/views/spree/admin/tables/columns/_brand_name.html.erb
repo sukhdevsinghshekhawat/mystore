@@ -1,0 +1,7 @@
+<%# locals: (record:, column:, value:) %>
+<%= link_to spree.edit_admin_brand_path(record), class: 'flex items-center gap-3 no-underline', data: { turbo_frame: '_top' } do %>
+  <% if record.logo.attached? %>
+    <%= spree_image_tag record.logo, width: 48, height: 48, class: 'rounded' %>
+  <% end %>
+  <span class="text-gray-900 font-medium"><%= record.name %></span>
+<% end %>
